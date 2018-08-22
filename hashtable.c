@@ -228,13 +228,13 @@ int main() {
 
     htable = newTable(100);
 
-    int input;
-    char key[32];
-    char value[32];
-
     printf("Welcome to PHash, a simple hash table >>>");
 
     while(1){
+
+        int input;
+        char key[32];
+        char value[32];
 
         printf("Enter a choice\n");
         printf("\t1. Insert\n");
@@ -266,19 +266,22 @@ int main() {
 
                 item* item1 = search(htable,key);
                 if(item1 == NULL){
-                    printf("Key not found in hashtable\n");
+                    printf("Key not found in hashtable \n");
                 } else{
-                    printf("Value for key %s is %s",key,item1->value);
+                    printf("Value for key %s is %s \n",key,item1->value);
                 }
                 break;
 
             case 3:
-                printf("Enter the key to delete\n");
+                printf("Enter the key to delete \n");
                 scanf("%s",key);
 
                 del(htable,key);
-                printf("Deleted the key %s successfully\n",key);
+                printf("Deleted the key %s successfully \n",key);
                 break;
+
+            default:
+                printf("Enter a value betweeen 0 and 3\n");
         }
     }
 
