@@ -10,11 +10,6 @@ table* htable;
 
 static item DELETED_ITEM = {NULL,NULL};
 
-table* newTable(int);
-item* newItem(char*,char*);
-void deleteItem(item*);
-void deleteTable(table* t)
-
 /**
  * Create a new hashtable based on struct 'table'
  * @param size of the hashtable
@@ -216,8 +211,14 @@ void resize(table* old_table,int size){
 
     }
 
+    //Make a reference to the old table
     table* tmp_table_ptr = old_table;
+
+    //old_table ptr will now point to the new table. In this way, resizing is transparent to other functions
+    //as the pointer variable is still the same and only the value of the ptr is changed (It now points to the new table instead of old one)
     old_table = new_table;
+
+    //Delete the old table
     deleteTable(tmp_table_ptr);
 }
 
