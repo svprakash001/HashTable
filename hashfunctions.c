@@ -2,7 +2,8 @@
 // Created by PRAKASH on 21-08-2018.
 //
 #include <string.h>
-#include "hashtable.h"
+#include <math.h>
+
 #include "hashfunctions.h"
 
 int getHash(char* key,int attempt,int no_of_buckets){
@@ -22,5 +23,38 @@ int hashFunc(char* key,int prime,int no_of_buckets){
         hashval += (long) prime * i * key[i];
         hashval %= no_of_buckets;
     }
-    return hashval%no_of_buckets;
+    return (int)hashval%no_of_buckets;
+}
+
+//Find the prime number that occurs next to the given number
+int next_prime(int n){
+
+    if(base <= 2){
+        return 2;
+    }
+
+    while(1){
+        if(isPrime(n)){
+            return n;
+        }
+        n++;
+    }
+}
+
+//check if a number is prime or not
+bool isPrime(int num){
+
+    if(num == 1)
+        return true;
+    else if(num%2 == 0)
+        return false;
+    else{
+        for(int i=3;i<=floor(sqrt(num));i++){
+
+            if(num%i == 0){
+                return false;
+            }
+        }
+        return true;
+    }
 }
