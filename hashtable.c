@@ -3,8 +3,10 @@
 //
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "hashtable.h"
+#include "hashfunctions.h"
 
 table* htable;
 
@@ -46,7 +48,7 @@ item* newItem(char* key,char* value){
  */
 void deleteItem(item* i){
 
-    if(item == NULL)
+    if(i == NULL)
         return;
 
     free(i->key);
@@ -83,7 +85,7 @@ void deleteTable(table* t){
 void insert(table* table1,char* key,char* value){
 
 
-    int index = getHash(key,0);  //Hash the key and get the index
+    int index = getHash(key,0,table1->size);  //Hash the key and get the index
 
     item* cur_item = table1->items[index];
 
@@ -91,7 +93,7 @@ void insert(table* table1,char* key,char* value){
 
     while(cur_item != NULL && cur_item != &DELETED_ITEM){
 
-        index = getHash(cur_item,attempt++);
+        index = getHash(cur_item,attempt++,table1->size);
         cur_item = table1->items[index];
     }
 
@@ -112,7 +114,7 @@ void insert(table* table1,char* key,char* value){
 
 item* search(table* table1,char* key){
 
-    int index = getHash(key,0);
+    int index = getHash(key,0,table1->size);
 
     item* cur_item = table1->items[index];
 
@@ -124,7 +126,7 @@ item* search(table* table1,char* key){
 
             return cur_item;
         }
-        index = getHash(cur_item,attempt++);
+        index = getHash(cur_item,attempt++,table1->size);
         cur_item = table1->items[index];
     }
     return NULL;
@@ -132,7 +134,7 @@ item* search(table* table1,char* key){
 
 void del(table* table1,char* key){
 
-    int index = getHash(key,0);
+    int index = getHash(key,0,table1->size);
 
     item* cur_item = table1->items[index];
 
@@ -145,7 +147,7 @@ void del(table* table1,char* key){
             deleteItem(cur_item);
             table1->items[index] = &DELETED_ITEM;
         }
-        index = getHash(cur_item,attempt++);
+        index = getHash(cur_item,attempt++,table1->size);
         cur_item = table1->items[index];
     }
 
@@ -225,6 +227,14 @@ void resize(table* old_table,int size){
 int main() {
 
     htable = newTable(100);
+
+    printf("Welocme to PHash, a simple hash table >>>");
+    printf("Enter your choice\n");
+    printf("\t1. Insert");
+    printf("\t2. Search");
+    printf("\t3. Delete");
+
+    
 
     return 0;
 }

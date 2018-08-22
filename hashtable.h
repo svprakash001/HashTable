@@ -5,6 +5,19 @@
 #ifndef HASHTABLE_HASHTABLE_H
 #define HASHTABLE_HASHTABLE_H
 
+//Datastructure for an item
+typedef struct{
+    char* key;
+    char* value;
+}item;
+
+//datastructure for the hash table
+typedef struct{
+    int size;
+    int count;
+    item** items;
+}table;
+
 table* newTable(int size);
 
 item* newItem(char* key,char* value);
@@ -25,17 +38,6 @@ void decreaseSize(table* table1);
 
 void resize(table* table1,int size);
 
-//Datastructure for an item
-typedef struct{
-    char* key;
-    char* value;
-}item;
 
-//datastructure for the hash table
-typedef struct{
-    int size;
-    int count;
-    item** items;
-}table;
 
 #endif //HASHTABLE_HASHTABLE_H

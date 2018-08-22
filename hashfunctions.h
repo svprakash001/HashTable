@@ -11,6 +11,6 @@ int hashFunc(char* key,int prime,int no_of_buckets);
 
 int next_prime(int n);
 
-bool isPrime(int num);
+int isPrime(int num);
 
 #endif //HASHTABLE_HASHFUNCTIONS_H
