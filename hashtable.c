@@ -42,18 +42,6 @@ item* newItem(char* key,char* value){
     return i;
 }
 
-/**
- * Delete an item from hashtable
- * @param Ptr to item
- */
-void deleteItem(item* i){
-
-    if(i == NULL)
-        return;
-
-    free(i->key);
-    free(i->value);
-}
 
 /**
  * Delete the entire hashtable and its contents.
@@ -77,6 +65,20 @@ void deleteTable(table* t){
 }
 
 /**
+ * Delete an item from hashtable
+ * @param Ptr to item
+ */
+void deleteItem(item* i){
+
+    if(i == NULL)
+        return;
+
+    free(i->key);
+    free(i->value);
+}
+
+
+/**
  * Insert an item into hashtable
  * @param hashtable
  * @param key
@@ -93,11 +95,11 @@ void insert(table* table1,char* key,char* value){
 
     while(cur_item != NULL && cur_item != &DELETED_ITEM){
 
-        index = getHash(cur_item,attempt++,table1->size);
+        index = getHash(key,attempt++,table1->size);
         cur_item = table1->items[index];
     }
 
-    cur_item = newItem(key,value);
+    table1->items[index] = newItem(key,value);
 
     table1->count++;
 
@@ -105,7 +107,7 @@ void insert(table* table1,char* key,char* value){
     // Increase the size of table to avoid frequent collisions
     //0.65 is an arbitrary value
 
-    int buckets_filled_ratio = table1->size/table1->count;
+    float buckets_filled_ratio = table1->count/(float)table1->size;
 
     if(buckets_filled_ratio > 0.65){
         increaseSize(table1);
@@ -126,7 +128,7 @@ item* search(table* table1,char* key){
 
             return cur_item;
         }
-        index = getHash(cur_item,attempt++,table1->size);
+        index = getHash(key,attempt++,table1->size);
         cur_item = table1->items[index];
     }
     return NULL;
@@ -147,7 +149,7 @@ void del(table* table1,char* key){
             deleteItem(cur_item);
             table1->items[index] = &DELETED_ITEM;
         }
-        index = getHash(cur_item,attempt++,table1->size);
+        index = getHash(key,attempt++,table1->size);
         cur_item = table1->items[index];
     }
 
@@ -156,7 +158,7 @@ void del(table* table1,char* key){
     //If load in the table < 0.15 we are wasting a lot of space
     // Decrease the size of table to avoid frequent collisions
     //0.15 is an arbitrary value
-    int buckets_filled_ratio = table1->size/table1->count;
+    float buckets_filled_ratio = table1->count/(float)table1->size;
 
     if(buckets_filled_ratio < 0.15){
         decreaseSize(table1);
@@ -210,31 +212,74 @@ void resize(table* old_table,int size){
 
             insert(new_table,cur_item->key,cur_item->value);
         }
-
     }
 
-    //Make a reference to the old table
-    table* tmp_table_ptr = old_table;
+    old_table->size = new_table->size;
 
-    //old_table ptr will now point to the new table. In this way, resizing is transparent to other functions
-    //as the pointer variable is still the same and only the value of the ptr is changed (It now points to the new table instead of old one)
-    old_table = new_table;
+    item** tmp = old_table->items;
+    old_table->items = new_table->items;
+    new_table->items = tmp;
 
     //Delete the old table
-    deleteTable(tmp_table_ptr);
+    deleteTable(new_table);
 }
 
 int main() {
 
     htable = newTable(100);
 
-    printf("Welocme to PHash, a simple hash table >>>");
-    printf("Enter your choice\n");
-    printf("\t1. Insert");
-    printf("\t2. Search");
-    printf("\t3. Delete");
+    int input;
+    char key[32];
+    char value[32];
 
-    
+    printf("Welcome to PHash, a simple hash table >>>");
 
-    return 0;
+    while(1){
+
+        printf("Enter a choice\n");
+        printf("\t1. Insert\n");
+        printf("\t2. Search\n");
+        printf("\t3. Delete\n");
+        printf("\t0. Exit\n");
+
+        scanf("%d",&input);
+
+        switch (input)
+        {
+            case 0:
+                printf("case 0");
+                return 0;
+
+            case 1:
+                printf("Enter the key to insert\n");
+                scanf("%s",key);
+                printf("Enter the value\n");
+                scanf("%s",value);
+
+                insert(htable,key,value);
+                printf("Inserted the key %s and value %s \n",key,value);
+                break;
+
+            case 2:
+                printf("Enter the key to search\n");
+                scanf("%s",key);
+
+                item* item1 = search(htable,key);
+                if(item1 == NULL){
+                    printf("Key not found in hashtable\n");
+                } else{
+                    printf("Value for key %s is %s",key,item1->value);
+                }
+                break;
+
+            case 3:
+                printf("Enter the key to delete\n");
+                scanf("%s",key);
+
+                del(htable,key);
+                printf("Deleted the key %s successfully\n",key);
+                break;
+        }
+    }
+
 }
